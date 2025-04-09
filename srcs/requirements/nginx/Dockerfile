@@ -1,8 +1,8 @@
 FROM nginx:latest
 
-#COPY conf/nginx.conf /etc/nginx/nginx.conf
-
 RUN apt update && apt upgrade && apt install -y\
-	nginx
+	php-fpm
 
-CMD ["nginx", "-g", "daemon off;"]
+COPY default /etc/nginx/conf.d/default.conf
+
+CMD ["nginx","-g","daemon off;"]

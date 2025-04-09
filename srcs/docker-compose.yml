@@ -2,10 +2,31 @@ version: "3.8"
 
 services:
   nginx:
-    build: ./requirements/nginx/.
+    build: requirements/nginx/.
     container_name: nginx
     ports:
       - "80:80"
+    volumes:
+      - ./web:/var/www/html
   wordpress:
     build: requirements/wordpress/.
     container_name: wp-php
+    volumes:
+      - ./web:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: davli
+      WORDPRESS_DB_PASSWORD: davli42
+  mariadb:
+    build: requirements/mariadb/.
+    container_name: mariadb
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:
