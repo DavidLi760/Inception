@@ -1,6 +1,10 @@
-FROM debian:latest
+FROM wordpress:php8.2-fpm
 
-RUN apt update && apt upgrade && apt install -y\
-	php-fpm
+COPY wp-config.php /var/www/html/wp-config.php
 
-CMD ["php-fpm8.2", "-F"]
+ENV WORDPRESS_DB_HOST=${WORDPRESS_DB_HOST}
+ENV WORDPRESS_DB_NAME=${WORDPRESS_DB_NAME}
+ENV WORDPRESS_DB_USER=${WORDPRESS_DB_USER}
+ENV WORDPRESS_DB_PASSWORD=${WORDPRESS_DB_PASSWORD}
+
+EXPOSE 9000
