@@ -1,6 +1,6 @@
-FROM alpine:3.18
+FROM nginx:stable
 
-RUN apk update && apk add --no-cache nginx openssl
+RUN apt update && apt install -y openssl
 
 RUN mkdir -p /etc/nginx/ssl \
     && openssl req -x509 -nodes -days 365 \
@@ -11,7 +11,7 @@ RUN mkdir -p /etc/nginx/ssl \
 
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./conf/conf.d /etc/nginx/conf.d/default.conf
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir -p /var/www/html
 
