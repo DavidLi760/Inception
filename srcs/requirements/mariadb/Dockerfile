@@ -1,12 +1,24 @@
-FROM mariadb:10.5
+FROM debian:buster
 
-ENV MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-ENV MYSQL_DATABASE=${MYSQL_DATABASE}
-ENV MYSQL_USER=${MYSQL_USER}
-ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
+RUN	apt-get update && \
+	apt-get install -y \
+	mariadb-server \
+	mariadb-client
 
-# Copie un script d'init si tu veux ajouter des instructions SQL au démarrage (facultatif)
-# COPY ./conf/init.sql /docker-entrypoint-initdb.d/
+RUN	mkdir -p /run/mysqld /var/lib/mysql && \
+	chown -R mysql:mysql /run/mysqld /var/lib/mysql
+
+# Init db and create root localhost without password set
+RUN	mysql_install_db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
+
+# Remote access to the database
+RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+COPY ./tools/setup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/setup.sh
 
 EXPOSE 3306
 
+ENTRYPOINT ["/usr/local/bin/setup.sh"]
+
+CMD ["/usr/bin/mysqld_safe", "--datadir=/var/lib/mysql"]

@@ -1,21 +1,15 @@
-FROM nginx:stable
+FROM debian:buster
 
-RUN apt update && apt install -y openssl
+RUN apt-get update && \
+    apt-get install -y nginx openssl
 
-RUN mkdir -p /etc/nginx/ssl \
-    && openssl req -x509 -nodes -days 365 \
-       -newkey rsa:2048 \
-       -keyout /etc/nginx/ssl/nginx.key \
-       -out /etc/nginx/ssl/nginx.crt \
-       -subj "/C=FR/ST=Paris/L=Paris/O=42/CN=localhost"
+RUN openssl req -new -newkey rsa:4096 -x509 -sha512 -days 365 -nodes  \
+	-subj "/C=FR/ST=Paris/O=42/CN=davli.42.fr"  \
+	-out /etc/ssl/certs/nginx.crt  \
+	-keyout /etc/ssl/private/nginx.key
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
-
-COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
-
-RUN mkdir -p /var/www/html
+COPY ./conf/nginx.conf /etc/nginx/conf.d
 
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
-
