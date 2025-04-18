@@ -1,24 +1,12 @@
-FROM debian:buster
-
-RUN	apt-get update && \
-	apt-get install -y \
-	mariadb-server \
-	mariadb-client
-
-RUN	mkdir -p /run/mysqld /var/lib/mysql && \
-	chown -R mysql:mysql /run/mysqld /var/lib/mysql
-
-# Init db and create root localhost without password set
-RUN	mysql_install_db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
-
-# Remote access to the database
-RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
-
-COPY ./tools/setup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup.sh
+FROM debian:bullseye
 
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/local/bin/setup.sh"]
+RUN apt update && apt upgrade -y && apt install -y mariadb-server
 
-CMD ["/usr/bin/mysqld_safe", "--datadir=/var/lib/mysql"]
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/.
+COPY tools/script.sh .
+
+RUN mkdir /run/mysqld && chmod +x script.sh
+
+CMD ["./script.sh"]
