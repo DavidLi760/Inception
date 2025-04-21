@@ -11,23 +11,23 @@ all:	up
 up:
 		sudo $(MKDIR) $(DATABASE_VOLUME)
 		sudo $(MKDIR) $(WORDPRESS_VOLUME)
-		docker-compose -f $(DOCKER_COMPOSE_FILE) up --build -d
+		sudo docker-compose -f $(DOCKER_COMPOSE_FILE) up --build -d
 
 down:
-		docker-compose -f $(DOCKER_COMPOSE_FILE) down
+		sudo docker-compose -f $(DOCKER_COMPOSE_FILE) down
 
 stop:
-		docker-compose -f $(DOCKER_COMPOSE_FILE) stop
+		sudo docker-compose -f $(DOCKER_COMPOSE_FILE) stop
 
-clean:		down
-		docker container prune --force
+clean: down
+		sudo docker container prune --force
 
-fclean:		clean
+fclean: clean
 		sudo $(RM) $(DATABASE_VOLUME)
 		sudo $(RM) $(WORDPRESS_VOLUME)
-		docker system prune --all --force
-		docker volume rm $(DATABASE_DOCKER_VOLUME) $(WORDPRESS_DOCKER_VOLUME)
+		sudo docker system prune --all --force
+		sudo docker volume rm $(DATABASE_DOCKER_VOLUME) $(WORDPRESS_DOCKER_VOLUME)
 
-re:			fclean all
+re: fclean all
 
 .PHONY:		all volume up down clean fclean re
