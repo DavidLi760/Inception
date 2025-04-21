@@ -1,8 +1,8 @@
 DOCKER_COMPOSE_FILE		= srcs/docker-compose.yml
 DATABASE_VOLUME			= /home/davli/data/mysql
 WORDPRESS_VOLUME		= /home/davli/data/wordpress
-DATABASE_DOCKER_VOLUME	= srcs_mariadb
-WORDPRESS_DOCKER_VOLUME	= srcs_wordpress
+DATABASE_DOCKER_VOLUME	= srcs_mariadb_v
+WORDPRESS_DOCKER_VOLUME	= srcs_wordpress_v
 MKDIR					= mkdir -p
 RM						= rm -rf
 
