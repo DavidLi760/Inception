@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 RUN	apt-get update && \
 	apt-get install -y \
@@ -8,10 +8,8 @@ RUN	apt-get update && \
 RUN	mkdir -p /run/mysqld /var/lib/mysql && \
 	chown -R mysql:mysql /run/mysqld /var/lib/mysql
 
-# Init db and create root localhost without password set
 RUN	mysql_install_db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
 
-# Remote access to the database
 RUN sed -i 's/127.0.0.1/0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
 
 COPY ./tools/setup.sh /usr/local/bin/
